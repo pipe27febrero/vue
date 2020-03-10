@@ -27,20 +27,21 @@
             </li>
             <li class="flex justify-between">
               <b class="text-gray-600 mr-10 uppercase">Precio más bajo</b>
-              <span></span>
+              <span>{{ min }}</span>
             </li>
             <li class="flex justify-between">
               <b class="text-gray-600 mr-10 uppercase">Precio más alto</b>
-              <span></span>
+              <span>{{ max }}</span>
             </li>
             <li class="flex justify-between">
               <b class="text-gray-600 mr-10 uppercase">Precio Promedio</b>
-              <span></span>
+              <span>{{ avg }}</span>
             </li>
             <li class="flex justify-between">
               <b class="text-gray-600 mr-10 uppercase">Variación 24hs</b>
               <span>{{asset.changePercent24Hr | percentage}}</span>
             </li>
+            
           </ul>
         </div>
 
@@ -74,18 +75,20 @@ export default {
   name: "CoinDetail",
   data() {
     return {
-      asset: {}
+      asset: {},
+      history : []
     };
   },
   computed : {
       min(){
-          return 2
+          return Math.min(...this.history.map(h => parseFloat(h.priceUsd).toFixed(2)))
       },
       max(){
-          return 1
+          return Math.max(...this.history.map(h => parseFloat(h.priceUsd).toFixed(2)))
       },
       avg(){
-          return 3
+          const avgPrice = this.history.map(h => parseFloat(h.priceUsd)).reduce((a,b) => a+b,0)/this.history.length
+          return avgPrice.toFixed(2)
       }
   },
   created() {
@@ -97,9 +100,9 @@ export default {
       Promise.all([
           api.getAsset(id),
           api.getAssetHistory(id)
-      ]).then(([data1,data2]) => {
-          console.log(data1)
-          console.log(data2)
+      ]).then(([asset,assetHistory]) => {
+          this.asset = asset.data
+          this.history = assetHistory.data
       })
     }
     }

@@ -19,8 +19,20 @@ function getAssetHistory(coin)
   return axios.get(`${url}/assets/${coin}/history?interval=h1&start=${start}&end=${end}`).then(res => res.data)
 }
 
+function getMarkets(coin)
+{
+  return axios.get(`${url}/assets/${coin}/markets?limit=5`).then(res => res.data)
+}
+
+function getExchange(id)
+{
+  return axios.get(`${url}/exchanges/${id}`).then(res => res.data)
+}
+
 export default {
   getAssets,
   getAsset,
-  getAssetHistory
+  getAssetHistory,
+  getMarkets,
+  getExchange
 };

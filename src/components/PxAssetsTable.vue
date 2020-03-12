@@ -3,10 +3,10 @@
     <thead>
       <tr class="bg-gray-100 border-b-2 border-gray-400">
         <th></th>
-        <th :class="{up : this.sortOrder ===1,down : this.sortOrder===-1}">
-          <span
-          class="underline cursor-pointer" 
-          @click="changeSortOrder">Ranking</span>
+        <th :class="{ up: this.sortOrder === 1, down: this.sortOrder === -1 }">
+          <span class="underline cursor-pointer" @click="changeSortOrder"
+            >Ranking</span
+          >
         </th>
         <th>Nombre</th>
         <th>Precio</th>
@@ -42,13 +42,14 @@
           <b> #{{ a.rank }} </b>
         </td>
         <td>
-          <router-link 
-          class="hover:underline text-green-600"
-          :to="{name :'coin-detail',params : {id : a.id}}">
-          {{ a.name }}
+          <router-link
+            class="hover:underline text-green-600"
+            :to="{ name: 'coin-detail', params: { id: a.id } }"
+          >
+            {{ a.name }}
           </router-link>
           <small class="ml-1 text-gray-500">
-              {{ a.symbol }}
+            {{ a.symbol }}
           </small>
         </td>
         <td>
@@ -68,8 +69,8 @@
         </td>
         <td class="hidden sm:block">
           <px-button @custom-click="goToCoin(a.id)">
-              <span>Detalle </span>
-             </px-button>
+            <span>Detalle </span>
+          </px-button>
         </td>
       </tr>
     </tbody>
@@ -77,32 +78,34 @@
 </template>
 
 <script>
-import PxButton from '@/components/PxButton';
+import PxButton from "@/components/PxButton";
 
 export default {
   name: "PxAssetsTable",
-  components : {
+  components: {
     PxButton
   },
   data() {
     return {
-      filter : '',
-      sortOrder : 1
-    }
+      filter: "",
+      sortOrder: 1
+    };
   },
-  computed : {
-    filteredAssets(){
-      const altOrder = this.sortOrder === 1 ? -1 : 1
-      return this.assets.filter(a => 
-        a.symbol.toLowerCase().includes(this.filter.toLowerCase()) ||
-        a.name.toLowerCase().includes(this.filter.toLowerCase())
-        ).sort((a,b) => {
-          if(parseInt(a.rank) > parseInt(b.rank))
-          {
-            return this.sortOrder
+  computed: {
+    filteredAssets() {
+      const altOrder = this.sortOrder === 1 ? -1 : 1;
+      return this.assets
+        .filter(
+          a =>
+            a.symbol.toLowerCase().includes(this.filter.toLowerCase()) ||
+            a.name.toLowerCase().includes(this.filter.toLowerCase())
+        )
+        .sort((a, b) => {
+          if (parseInt(a.rank) > parseInt(b.rank)) {
+            return this.sortOrder;
           }
-          return altOrder
-        }) 
+          return altOrder;
+        });
     }
   },
   props: {
@@ -111,13 +114,13 @@ export default {
       default: () => []
     }
   },
-  methods : {
-    goToCoin(id){
-      this.$router.push({name : 'coin-detail',params : {id}})
+  methods: {
+    goToCoin(id) {
+      this.$router.push({ name: "coin-detail", params: { id } });
     },
-    changeSortOrder(){
+    changeSortOrder() {
       this.sortOrder = this.sortOrder === 1 ? -1 : 1;
-      console.log(this.sortOrder)
+      console.log(this.sortOrder);
     }
   }
 };

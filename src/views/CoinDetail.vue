@@ -51,13 +51,17 @@
         <div class="my-10 sm:mt-0 flex flex-col justify-center text-center">
           <button
             class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+            @click="toggleConverter"
+            
           >
-            Cambiar
+           {{ fromUsd ? `USD a ${asset.symbol}` : `${asset.symbol} a USD`}}
           </button>
 
           <div class="flex flex-row my-5">
             <label class="w-full">
               <input
+                v-model="convertValue"
+                :placeholder="`Valor en ${fromUsd ? 'USD' : asset.symbol}`"
                 id="convertValue"
                 type="number"
                 class="text-center bg-white focus:outline-none focus:shadow-outline border border-gray-300 rounded-lg py-2 px-4 block w-full appearance-none leading-normal"
@@ -65,7 +69,7 @@
             </label>
           </div>
 
-          <span class="text-xl"></span>
+          <span class="text-xl">{{ convertResult }} {{ fromUsd ?  `${asset.symbol}` : `USD`}}</span>
         </div>
       </div>
       <line-chart class="my-10" 
@@ -74,9 +78,9 @@
       :max="max"
       :data="history.map(h=>[h.date,parseFloat(h.priceUsd).toFixed(2)])"/>
       <h3 class="text-xl my-10"> Mejores Ofertas de Cambio </h3>
-      <table>
+          <table >
         <tr v-for="m in markets" :key="`${m.exchangeId}-${m.priceUsd}`" class="border-b">
-          <td>
+          <td class="px-8 py-2">
             <b>{{ m.exchangeId}} </b>
           </td>
           <td>
@@ -92,11 +96,15 @@
             @custom-click="getWebsite(m)">
               <slot>Obtener Link </slot>
             </px-button>
-            <a v-else class="hover:underline text-green-600" target="_blank">
+            <a v-else class="hover:underline text-green-600" target="_blank" :href="m.url">
               {{ m.url }} </a>
           </td>
         </tr>
       </table>
+
+     
+      
+     
     </template>
   </div>
 </template>
@@ -107,15 +115,30 @@ import PxButton from '@/components/PxButton'
 export default {
   name: "CoinDetail",
   components : {PxButton},
+  watch : {
+    $route() {
+      this.getCoin()
+    }
+  },
   data() {
     return {
       asset: {},
       history : [],
       isLoading : false,
-      markets : []
+      markets : [],
+      fromUsd : true,
+      convertValue : null
     };
   },
   computed : {
+      convertResult(){
+        if(!this.convertValue)
+        {
+          return 0
+        }
+        const result = this.fromUsd ? this.convertValue/this.asset.priceUsd : this.convertValue * this.asset.priceUsd        
+        return result.toFixed(4)
+      },
       min(){
           return Math.min(...this.history.map(h => parseFloat(h.priceUsd).toFixed(2)))
       },
@@ -131,6 +154,9 @@ export default {
     this.getCoin()
   },
   methods: {
+    toggleConverter(){
+      this.fromUsd = !this.fromUsd
+    },
     getWebsite(exchange){
       this.$set(exchange,'isLoading',true)
       return api.getExchange(exchange.exchangeId)
@@ -157,3 +183,11 @@ export default {
 }
 
 </script>
+
+<style scoped>
+  td {
+    padding: 10px;
+  }
+
+
+</style>

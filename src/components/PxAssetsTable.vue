@@ -120,7 +120,7 @@ export default {
     },
     changeSortOrder() {
       this.sortOrder = this.sortOrder === 1 ? -1 : 1;
-      console.log(this.sortOrder);
+      
     }
   }
 };

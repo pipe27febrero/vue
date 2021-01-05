@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "@saeris/vue-spinners": "^1.0.8",
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "core-js": "^3.6.4",
     "highcharts": "^8.0.4",
     "numeral": "^2.0.6",
